@@ -7,6 +7,10 @@ output:
     self_contained: false
 ---
 
+```{r, include=FALSE}
+library(tidyverse)
+library(usdata)
+```
 
 
 ## Project thoughts
@@ -15,4 +19,12 @@ I'm not really sure what to do for the final project or what the scope of it is.
 
 ## My Research Question
 
-Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. Luckily, I had a backup plan. I have seen conservative commentators like Charlie Kirk and Ben Shapiro ask "Is diversity really our strength?" I want to investigate this question. Specifically, I'm going to focus on racial diversity and immigration. My research question is: Do immigrants increase the economic output of their communities? My hypothesis is that immigrants do increase the economic activity in their communities because 1) they are willing to do low-paying jobs (eg. dishwasher, janitor) that are necessary but not appealing to native-born citizens and 2) they bring a diversity of ideas and experiences that can lead to new and effective business ventures. My explanatory variable will be the proportion of immigrants in each US county. This is collected by the US Census Bureau (https://www.census.gov/library/stories/2024/04/where-do-immigrants-live.html). County level data is also provided by the Migration Policy Institute. If I cannot find county level data, I will use data for each state. If I have time, I would also like to break down immigrants by country of origin and by first, second, and third generation, but I will need to find more data for this. My outcome variable will be several different economic indicators. I was planning to look at median income and home price, standard of living, and GDP per capita (if that is available at the county level). If I have time, I can look at social factors as well like crime rate, high school graduation rate, and happiness to gain a more wholistic answer to my overarching question: "Is diversity really our strength?" A pattern of increased economic output like higher median income or lower unemployment rate in counties with high proportion of immigrants would support my hypothesis. A negative or close to zero correlation would disprove my hypothesis.
+Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: "Asian-Americans are the model minority". I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. If there's time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. My outcome variable will be the county's median household income. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.
+
+```{r}
+data(county_complete)
+asian <- read_csv("data/asian_breakdown.csv")
+education <- read_csv("data/educational_attainment.csv")
+```
+
+I checked the output for head() and glimpse() and they both work. The reason I did not include them is because the tibble is 188 columns and would take up way too much space when I knit.
