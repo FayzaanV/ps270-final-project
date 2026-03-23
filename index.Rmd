@@ -19,7 +19,7 @@ I'm not really sure what to do for the final project or what the scope of it is.
 
 ## My Research Question
 
-Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: "Asian-Americans are the model minority". I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. If there's time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. My outcome variable will be the county's median household income. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.
+Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: "Asian-Americans are the model minority". I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. My outcome variable will be the county's median household income. If there's time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.
 
 ```{r}
 data(county_complete)
@@ -28,3 +28,42 @@ education <- read_csv("data/educational_attainment.csv")
 ```
 
 I checked the output for head() and glimpse() and they both work. The reason I did not include them is because the tibble is 188 columns and would take up way too much space when I knit.
+
+## Data Wrangling and Visualization
+
+For my visualization, I want to quickly show the relationship between proportion of Asian American population and median income. While it may look like this is almost the end of answering the question I had, I still have many confounding variables to tackle to more strongly establish a causatory relationship. I'm going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don't have to do any wrangling to get the plot. However, since the assignment specifically requests I do some cleaning, I'm going to plot an average line and calculate the coefficient of determination to help see if there is a causatory relationship between my two variables.
+
+First, I'm going to calculate the median individual income for all counties.
+
+```{r}
+county_complete |>
+  summarize(med_inc = median(median_individual_income_2019))
+```
+
+Now, I will make a scatterplot with a smoothed line and the median line.
+
+```{r}
+ggplot(county_complete, aes(x = asian_2017, y = median_individual_income_2019)) + 
+  geom_point() + 
+  scale_x_log10() + 
+  geom_smooth() + 
+  labs(
+    x = "Proportion of Asian Americans",
+    y = "Median Individual Income in Dollars",
+    title = "Median Income and Asian Population by County"
+  ) + 
+  geom_hline(yintercept = 26975, color = "red",  lwd = 1)
+```
+
+Now, I will find a linear model for the line of best fit to see the coefficient of determination.
+
+```{r}
+prop_med_fit <- lm(median_individual_income_2019 ~ asian_2017, county_complete)
+prop_med_fit
+prop_med_fit_summary = summary(prop_med_fit)
+prop_med_fit_summary$r.squared
+```
+
+
+
+
