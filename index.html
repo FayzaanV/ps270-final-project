@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/asian_breakdown.csv","data/educational_attainment.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["data/asian_breakdown.csv","data/educational_attainment.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-4-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1547,7 +1547,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h2 id="project-thoughts">Project thoughts</h2>
 <p>I’m not really sure what to do for the final project or what the scope of it is. I did have an idea about the mayoral race in Minneapolis. One of the candidates, Omar Fateh, was Somali, but I saw somewhere that only about half of the Somali population in Minneapolis voted for him and the rest voted for the incumbent Jacob Frey. I wanted to see if I could find data for this and why he split his own community’s vote.</p>
 <h2 id="my-research-question">My Research Question</h2>
-<p>Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: “Asian-Americans are the model minority”. I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. If there’s time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. My outcome variable will be the county’s median household income. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.</p>
+<p>Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: “Asian-Americans are the model minority”. I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. My outcome variable will be the county’s median household income. If there’s time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>county_complete</span><span class='op'>)</span></span>
@@ -1556,7 +1556,53 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 </div>
 <p>I checked the output for head() and glimpse() and they both work. The reason I did not include them is because the tibble is 188 columns and would take up way too much space when I knit.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="data-wrangling-and-visualization">Data Wrangling and Visualization</h2>
+<p>For my visualization, I want to quickly show the relationship between proportion of Asian American population and median income. While it may look like this is almost the end of answering the question I had, I still have many confounding variables to tackle to more strongly establish a causatory relationship. I’m going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don’t have to do any wrangling to get the plot. However, since the assignment specifically requests I do some cleaning, I’m going to plot an average line and calculate the coefficient of determination to help see if there is a causatory relationship between my two variables.</p>
+<p>First, I’m going to calculate the median individual income for all counties.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>county_complete</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>med_inc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>median_individual_income_2019</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>  med_inc
+1   26975</code></pre>
+</div>
+<p>Now, I will make a scatterplot with a smoothed line and the median line.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>county_complete</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>asian_2017</span>, y <span class='op'>=</span> <span class='va'>median_individual_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_log10</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
+<span>    x <span class='op'>=</span> <span class='st'>"Proportion of Asian Americans"</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Median Individual Income in Dollars"</span>,</span>
+<span>    title <span class='op'>=</span> <span class='st'>"Median Income and Asian Population by County"</span></span>
+<span>  <span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='fl'>26975</span>, color <span class='op'>=</span> <span class='st'>"red"</span>,  lwd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-4-1.png" alt="" width="624" /></p>
+</div>
+<p>Now, I will find a linear model for the line of best fit to see the coefficient of determination.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>median_individual_income_2019</span> <span class='op'>~</span> <span class='va'>asian_2017</span>, <span class='va'>county_complete</span><span class='op'>)</span></span>
+<span><span class='va'>prop_med_fit</span></span></code></pre>
+</div>
+<pre><code>
+Call:
+lm(formula = median_individual_income_2019 ~ asian_2017, data = county_complete)
+
+Coefficients:
+(Intercept)   asian_2017  
+      26539         1704  </code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit_summary</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>prop_med_fit</span><span class='op'>)</span></span>
+<span><span class='va'>prop_med_fit_summary</span><span class='op'>$</span><span class='va'>r.squared</span></span></code></pre>
+</div>
+<pre><code>[1] 0.16264</code></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
