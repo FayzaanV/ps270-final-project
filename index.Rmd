@@ -12,53 +12,53 @@ library(tidyverse)
 library(usdata)
 ```
 
+## Introduction
 
-## Project thoughts
+This research project explores if there is any statistical backing to the claim "Asian-Americans are the model minority". That statement portrays Asian-Americans as diligent, hardworking, and compliant. This claim is often based on data that shows that Asian-American individuals have  higher educational and career achievement than individuals from other ethnic groups. If Asian-Americans are this "model minority", I want to explore if their diligence is also beneficial to the community they live in. To do this, I will use data from every county in the United States. This is an observational study. My hypothesis is that a greater proportion of Asian-Americans in a county will be associated with a greater median household income. 
 
-I'm not really sure what to do for the final project or what the scope of it is. I did have an idea about the mayoral race in Minneapolis. One of the candidates, Omar Fateh, was Somali, but I saw somewhere that only about half of the Somali population in Minneapolis voted for him and the rest voted for the incumbent Jacob Frey. I wanted to see if I could find data for this and why he split his own community's vote.
+This model minority myth is a very pervasive belief about Asian-Americans. It ignores nuance, and assumes all subgroups of Asians-Americans from Pakistanis to Koreans to Indonesians are the same. By assuming Asian-Americans are naturally more talented, it ignores and marginalizes the struggles and racism they face. Furthermore, it leads to the perception that Asian-Americans will always succeed, which can lead to under-reporting and lack of resources to address mental health issues or poverty. My research will examine one of the economic pillars that is used to justify this label. If the relationship between Asian-American proportion and median household income is weak, it will undermine the assumption that Asian-Americans are the model minority. Conversely, if the relationship is strong, it could raise the question of whether the proportion of Asian-Americans is responsible for this or if there are confounding variables at play. 
 
-## My Research Question
-
-Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: "Asian-Americans are the model minority". I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. My outcome variable will be the county's median household income. If there's time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.
 
 ```{r}
 data(county_complete)
-asian <- read_csv("data/asian_breakdown.csv")
-education <- read_csv("data/educational_attainment.csv")
 ```
-
-I checked the output for head() and glimpse() and they both work. The reason I did not include them is because the tibble is 188 columns and would take up way too much space when I knit.
 
 ## Data Wrangling and Visualization
 
 For my visualization, I want to quickly show the relationship between proportion of Asian American population and median income. While it may look like this is almost the end of answering the question I had, I still have many confounding variables to tackle to more strongly establish a causatory relationship. I'm going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don't have to do any wrangling to get the plot. However, since the assignment specifically requests I do some cleaning, I'm going to plot an average line and calculate the coefficient of determination to help see if there is a causatory relationship between my two variables.
 
+I will focus on the asian_2019 variable, which measures the percentage of that county to be of Asian heritage in 2019, and median_household_income_2019, which is the median income of all households in the county in 2019. I will run a regression analysis and run a hypothesis test to see if the slope is greater than zero. Even though I have the population data (all US counties), I will still run a hypothesis test and treat the counties as a sample of all potential communities. 
+
+the county_complete data set, which has 
+
 First, I'm going to calculate the median individual income for all counties.
 
 ```{r}
-county_complete |>
-  summarize(med_inc = median(median_individual_income_2019))
+pop_med_inc <- county_complete |>
+  summarize(med_inc = median(median_household_income_2019)) |>
+  pull()
+pop_med_inc
 ```
 
 Now, I will make a scatterplot with a smoothed line and the median line.
 
 ```{r}
-ggplot(county_complete, aes(x = asian_2017, y = median_individual_income_2019)) + 
+ggplot(county_complete, aes(x = asian_2019, y = median_household_income_2019)) + 
   geom_point(alpha = 0.3) + 
   scale_x_log10() + 
   geom_smooth() + 
   labs(
     x = "Proportion of Asian Americans",
-    y = "Median Individual Income in Dollars",
+    y = "Median Household Income in Dollars",
     title = "Median Income and Asian Population by County"
   ) + 
-  geom_hline(yintercept = 26975, color = "red",  lwd = 1)
+  geom_hline(yintercept = pop_med_inc, color = "red",  lwd = 1)
 ```
 
 Now, I will find a linear model for the line of best fit to see the coefficient of determination.
 
 ```{r}
-prop_med_fit <- lm(median_individual_income_2019 ~ asian_2017, county_complete)
+prop_med_fit <- lm(median_household_income_2019 ~ asian_2019, county_complete)
 prop_med_fit
 prop_med_fit_summary = summary(prop_med_fit)
 prop_med_fit_summary$r.squared

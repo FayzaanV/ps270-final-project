@@ -1544,63 +1544,62 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
-<h2 id="project-thoughts">Project thoughts</h2>
-<p>I’m not really sure what to do for the final project or what the scope of it is. I did have an idea about the mayoral race in Minneapolis. One of the candidates, Omar Fateh, was Somali, but I saw somewhere that only about half of the Somali population in Minneapolis voted for him and the rest voted for the incumbent Jacob Frey. I wanted to see if I could find data for this and why he split his own community’s vote.</p>
-<h2 id="my-research-question">My Research Question</h2>
-<p>Unfortunately, I was not able to find any data for my above thoughts about the Minneapolis election. I decided to transition to another question relating to a statement I have often heard: “Asian-Americans are the model minority”. I wonder if there is any statistical backing to this. We can already see from the census data I imported that Asian-Americans tend to have higher than average educational-attainment and career earnings, but does this translate to their communities. I intend to use the county_complete data set to examine if a higher proportion of Asians in a community will lead to a higher median income. My hypothesis is that they will. Because of their individual education and earnings, I believe the presence of Asian-Americans in a community will economically benefit that community. My explanatory variable will be the percentage of the population in a county that is Asian. My outcome variable will be the county’s median household income. If there’s time, I can also examine other economic or social metrics like unemployment rate, percentage under the poverty line, crime rate, and life expectancy. A positive regression coefficient would support my hypothesis, while one that is negative or close to zero would show no association or a negative association between the presence of Asians and median income.</p>
+<h2 id="introduction">Introduction</h2>
+<p>This research project explores if there is any statistical backing to the claim “Asian-Americans are the model minority”. That statement portrays Asian-Americans as diligent, hardworking, and compliant. This claim is often based on data that shows that Asian-American individuals have higher educational and career achievement than individuals from other ethnic groups. If Asian-Americans are this “model minority”, I want to explore if their diligence is also beneficial to the community they live in. To do this, I will use data from every county in the United States. This is an observational study. My hypothesis is that a greater proportion of Asian-Americans in a county will be associated with a greater median household income.</p>
+<p>This model minority myth is a very pervasive belief about Asian-Americans. It ignores nuance, and assumes all subgroups of Asians-Americans from Pakistanis to Koreans to Indonesians are the same. By assuming Asian-Americans are naturally more talented, it ignores and marginalizes the struggles and racism they face. Furthermore, it leads to the perception that Asian-Americans will always succeed, which can lead to under-reporting and lack of resources to address mental health issues or poverty. My research will examine one of the economic pillars that is used to justify this label. If the relationship between Asian-American proportion and median household income is weak, it will undermine the assumption that Asian-Americans are the model minority. Conversely, if the relationship is strong, it could raise the question of whether the proportion of Asian-Americans is responsible for this or if there are confounding variables at play.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>county_complete</span><span class='op'>)</span></span>
-<span><span class='va'>asian</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"data/asian_breakdown.csv"</span><span class='op'>)</span></span>
-<span><span class='va'>education</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"data/educational_attainment.csv"</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>county_complete</span><span class='op'>)</span></span></code></pre>
 </div>
 </div>
-<p>I checked the output for head() and glimpse() and they both work. The reason I did not include them is because the tibble is 188 columns and would take up way too much space when I knit.</p>
 <h2 id="data-wrangling-and-visualization">Data Wrangling and Visualization</h2>
 <p>For my visualization, I want to quickly show the relationship between proportion of Asian American population and median income. While it may look like this is almost the end of answering the question I had, I still have many confounding variables to tackle to more strongly establish a causatory relationship. I’m going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don’t have to do any wrangling to get the plot. However, since the assignment specifically requests I do some cleaning, I’m going to plot an average line and calculate the coefficient of determination to help see if there is a causatory relationship between my two variables.</p>
+<p>I will focus on the asian_2019 variable, which measures the percentage of that county to be of Asian heritage in 2019, and median_household_income_2019, which is the median income of all households in the county in 2019. I will run a regression analysis and run a hypothesis test to see if the slope is greater than zero. Even though I have the population data (all US counties), I will still run a hypothesis test and treat the counties as a sample of all potential communities.</p>
+<p>the county_complete data set, which has</p>
 <p>First, I’m going to calculate the median individual income for all counties.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>county_complete</span> <span class='op'>|&gt;</span></span>
-<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>med_inc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>median_individual_income_2019</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>pop_med_inc</span> <span class='op'>&lt;-</span> <span class='va'>county_complete</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>med_inc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>median_household_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/pull.html'>pull</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='va'>pop_med_inc</span></span></code></pre>
 </div>
-<pre><code>  med_inc
-1   26975</code></pre>
+<pre><code>[1] 51757.5</code></pre>
 </div>
 <p>Now, I will make a scatterplot with a smoothed line and the median line.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>county_complete</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>asian_2017</span>, y <span class='op'>=</span> <span class='va'>median_individual_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>county_complete</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>asian_2019</span>, y <span class='op'>=</span> <span class='va'>median_household_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_log10</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
 <span>    x <span class='op'>=</span> <span class='st'>"Proportion of Asian Americans"</span>,</span>
-<span>    y <span class='op'>=</span> <span class='st'>"Median Individual Income in Dollars"</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Median Household Income in Dollars"</span>,</span>
 <span>    title <span class='op'>=</span> <span class='st'>"Median Income and Asian Population by County"</span></span>
 <span>  <span class='op'>)</span> <span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='fl'>26975</span>, color <span class='op'>=</span> <span class='st'>"red"</span>,  lwd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='va'>pop_med_inc</span>, color <span class='op'>=</span> <span class='st'>"red"</span>,  lwd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
 </div>
 <p><img src="index_files/figure-html5/unnamed-chunk-4-1.png" alt="" width="624" /></p>
 </div>
 <p>Now, I will find a linear model for the line of best fit to see the coefficient of determination.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>median_individual_income_2019</span> <span class='op'>~</span> <span class='va'>asian_2017</span>, <span class='va'>county_complete</span><span class='op'>)</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>median_household_income_2019</span> <span class='op'>~</span> <span class='va'>asian_2019</span>, <span class='va'>county_complete</span><span class='op'>)</span></span>
 <span><span class='va'>prop_med_fit</span></span></code></pre>
 </div>
 <pre><code>
 Call:
-lm(formula = median_individual_income_2019 ~ asian_2017, data = county_complete)
+lm(formula = median_household_income_2019 ~ asian_2019, data = county_complete)
 
 Coefficients:
-(Intercept)   asian_2017  
-      26539         1704  </code></pre>
+(Intercept)   asian_2019  
+      50093         2442  </code></pre>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit_summary</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>prop_med_fit</span><span class='op'>)</span></span>
 <span><span class='va'>prop_med_fit_summary</span><span class='op'>$</span><span class='va'>r.squared</span></span></code></pre>
 </div>
-<pre><code>[1] 0.16264</code></pre>
+<pre><code>[1] 0.2322692</code></pre>
 </div>
 <h2 id="data-analysis">Data Analysis</h2>
 <p>From the regression, we can see that the intercept is 26,539. That means that the median income in a county with zero Asian American is predicted to be $26,539. The slope of 1,704 means that for every percentage point increase in the proportion of Asian Americans, the county’s median income is predicted to increase by $1,704. The r-squared values means that 16% of the variation of the dependent variable, median income, can be explained by the independent variable, proportion of Asian Americans. This means there is a small relationship between the two variables. Based on how the graph looks, this could mean there is a nonlinear relationship between the two variables.</p>
