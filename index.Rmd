@@ -44,7 +44,7 @@ Now, I will make a scatterplot with a smoothed line and the median line.
 
 ```{r}
 ggplot(county_complete, aes(x = asian_2017, y = median_individual_income_2019)) + 
-  geom_point() + 
+  geom_point(alpha = 0.3) + 
   scale_x_log10() + 
   geom_smooth() + 
   labs(
