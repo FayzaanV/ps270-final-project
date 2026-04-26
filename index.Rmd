@@ -23,22 +23,39 @@ This model minority myth is a very pervasive belief about Asian-Americans. It ig
 data(county_complete)
 ```
 
-## Data Wrangling and Visualization
+## Data
 
-For my visualization, I want to quickly show the relationship between proportion of Asian American population and median income. While it may look like this is almost the end of answering the question I had, I still have many confounding variables to tackle to more strongly establish a causatory relationship. I'm going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don't have to do any wrangling to get the plot. However, since the assignment specifically requests I do some cleaning, I'm going to plot an average line and calculate the coefficient of determination to help see if there is a causatory relationship between my two variables.
+I will use the county_complete data set from the usdata package, which uses US Census data. The county_complete data set has data for every US county on a variety of factors. I will focus on the asian_2019 variable, which measures the percentage of that county to be of Asian heritage in 2019, and median_household_income_2019, which is the median income of all households in the county in 2019. Both of these variables were measured from the American Community Survey. I will run a regression analysis and run a hypothesis test to see if the slope is greater than zero. Even though I have the population data (all US counties), I will still run a hypothesis test and treat the counties as a sample of all potential communities. This is a cross-sectional design, since all data is measured at a single point in time.
 
-I will focus on the asian_2019 variable, which measures the percentage of that county to be of Asian heritage in 2019, and median_household_income_2019, which is the median income of all households in the county in 2019. I will run a regression analysis and run a hypothesis test to see if the slope is greater than zero. Even though I have the population data (all US counties), I will still run a hypothesis test and treat the counties as a sample of all potential communities. 
+For the hypothesis test, the null hypothesis test will be that the regression slope (β) is zero, showing no relationship between proportion of Asian-Americans and median household income. The alternative hypothesis will be that β > 0, showing a positive relationship between proportion of  Asian-Americans and median household income. This test will be conducted at the 0.05 level. 
 
-the county_complete data set, which has 
+The outcome of interest is the median household income in each county. Below is a histogram of this for every county.
 
-First, I'm going to calculate the median individual income for all counties.
+```{r}
+ggplot(county_complete, aes(x = median_household_income_2019)) +
+  geom_histogram(binwidth = 2500) + 
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = "Median Household Income ($)",
+    y = "Count",
+    title = "Median Household Income by County in the US in 2019"
+  )
+```
+
+From this histogram, we can see that Median Household Income by county is skewed to the right and has a single peak at approximately $50,000.
+
+## Results
+
+First, I'm going to calculate the median household income for all counties.
 
 ```{r}
 pop_med_inc <- county_complete |>
   summarize(med_inc = median(median_household_income_2019)) |>
   pull()
-pop_med_inc
+knitr::kable(pop_med_inc, col.names = c("Median US Household income ($) in 2019"))
 ```
+
+I want to visualize the relationship between proportion of Asian American population and median income. I'm going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don't have to do any wrangling to get the plot. I'm going to plot an average line and calculate the coefficient of determination to help see if the proportion of Asians has any meaningful correlation.
 
 Now, I will make a scatterplot with a smoothed line and the median line.
 
@@ -64,8 +81,30 @@ prop_med_fit_summary = summary(prop_med_fit)
 prop_med_fit_summary$r.squared
 ```
 
-## Data Analysis
+From the regression, we can see that the intercept is 26,539. That means that the median income in a county with zero Asian American is predicted to be $26,539. The slope of 1,704 means that for every percentage point increase in the proportion of Asian Americans, the county's median income is predicted to increase by $1,704. The r-squared values means that 16% of the variation of the dependent variable, median income, can be explained by the independent variable, proportion of Asian Americans. This means there is a small relationship between the two variables. Based on how the graph looks, this could mean there is a nonlinear relationship between the two variables.
 
-From the regression, we can see that the intercept is 26,539. That means that the median income in a county with zero Asian American is predicted to be $26,539. The slope of 1,704 means that for every percentage point increase in the proportion of Asian Americans, the county's median income is predicted to increase by $1,704. The r-squared values means that 16% of the variation of the dependent variable, median income, can be explained by the independent variable, proportion of Asian Americans. This means there is a small relationship between the two variables. Based on how the graph looks, this could mean there is a nonlinear relationship between the two variables. 
+Now, I will run a hypothesis test to find a p-value for the slope of the regression.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
