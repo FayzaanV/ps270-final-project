@@ -1,7 +1,7 @@
 ---
 title: "PS270 Final Project"
 author: "Fayzaan Virk"
-description: "My final project"
+description: "Does the proportion of Asian-Americans increase median income?"
 output:
   distill::distill_article:
     self_contained: false
