@@ -1555,23 +1555,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h2 id="data">Data</h2>
 <p>I will use the county_complete data set from the usdata package, which uses US Census data. The county_complete data set has data for every US county on a variety of factors. I will focus on the asian_2019 variable, which measures the percentage of that county to be of Asian heritage in 2019, and median_household_income_2019, which is the median income of all households in the county in 2019. Both of these variables were measured from the American Community Survey. I will run a regression analysis and run a hypothesis test to see if the slope is greater than zero. Even though I have the population data (all US counties), I will still run a hypothesis test and treat the counties as a sample of all potential communities. This is a cross-sectional design, since all data is measured at a single point in time.</p>
 <p>For the hypothesis test, the null hypothesis test will be that the regression slope (β) is zero, showing no relationship between proportion of Asian-Americans and median household income. The alternative hypothesis will be that β &gt; 0, showing a positive relationship between proportion of Asian-Americans and median household income. This test will be conducted at the 0.05 level.</p>
-<p>The outcome of interest is the median household income in each county. Below is a histogram of this for every county.</p>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>county_complete</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>median_household_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>binwidth <span class='op'>=</span> <span class='fl'>2500</span><span class='op'>)</span> <span class='op'>+</span> </span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='va'><a href='https://scales.r-lib.org/reference/comma.html'>comma</a></span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
-<span>    x <span class='op'>=</span> <span class='st'>"Median Household Income ($)"</span>,</span>
-<span>    y <span class='op'>=</span> <span class='st'>"Count"</span>,</span>
-<span>    title <span class='op'>=</span> <span class='st'>"Median Household Income by County in the US in 2019"</span></span>
-<span>  <span class='op'>)</span></span></code></pre>
-</div>
-<p><img src="index_files/figure-html5/unnamed-chunk-3-1.png" alt="" width="624" /></p>
-</div>
-<p>From this histogram, we can see that Median Household Income by county is skewed to the right and has a single peak at approximately $50,000.</p>
-<h2 id="results">Results</h2>
-<p>First, I’m going to calculate the median household income for all counties.</p>
+<p>The outcome of interest is the median household income in each county. Below is a histogram of this for every county with a vertical line at the median household income for all counties.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>pop_med_inc</span> <span class='op'>&lt;-</span> <span class='va'>county_complete</span> <span class='op'>|&gt;</span></span>
@@ -1591,14 +1575,28 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tr>
 </tbody>
 </table>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>county_complete</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>median_household_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>binwidth <span class='op'>=</span> <span class='fl'>2500</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='va'><a href='https://scales.r-lib.org/reference/comma.html'>comma</a></span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
+<span>    x <span class='op'>=</span> <span class='st'>"Median Household Income ($)"</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Count"</span>,</span>
+<span>    title <span class='op'>=</span> <span class='st'>"Median Household Income by County in the US in 2019"</span></span>
+<span>  <span class='op'>)</span></span></code></pre>
 </div>
-<p>I want to visualize the relationship between proportion of Asian American population and median income. I’m going to create a scatterplot with Asian proportion on the x-axis and median individual income on the y-axis. The county_complete data set already has these variables neatly stored, so I don’t have to do any wrangling to get the plot. I’m going to plot an average line and calculate the coefficient of determination to help see if the proportion of Asians has any meaningful correlation.</p>
-<p>Now, I will make a scatterplot with a smoothed line and the median line.</p>
+<p><img src="index_files/figure-html5/unnamed-chunk-3-1.png" alt="" width="624" /></p>
+</div>
+<p>From this histogram, we can see that Median Household Income by county is skewed to the right and has a single peak at approximately $50,000.</p>
+<h2 id="results">Results</h2>
+<p>I want to visualize the relationship between proportion of Asian American population and median income. This scatterplot will have Asian proportion on the x-axis and median individual income on the y-axis. I’m going to plot an average line and calculate the coefficient of determination to help see if the proportion of Asians has any meaningful correlation.</p>
+<p>Below is a scatterplot with a smoothed line and the median line.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>county_complete</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>asian_2019</span>, y <span class='op'>=</span> <span class='va'>median_household_income_2019</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.3</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_log10</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_y_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='va'><a href='https://scales.r-lib.org/reference/comma.html'>comma</a></span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
 <span>    x <span class='op'>=</span> <span class='st'>"Proportion of Asian Americans"</span>,</span>
@@ -1607,30 +1605,150 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span>  <span class='op'>)</span> <span class='op'>+</span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_hline</a></span><span class='op'>(</span>yintercept <span class='op'>=</span> <span class='va'>pop_med_inc</span>, color <span class='op'>=</span> <span class='st'>"red"</span>,  lwd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="index_files/figure-html5/unnamed-chunk-5-1.png" alt="" width="624" /></p>
+<p><img src="index_files/figure-html5/unnamed-chunk-4-1.png" alt="" width="624" /></p>
 </div>
+<p>In order to show the data better, the scatter plot has a logarithmic scale on the x-axis. This better shows the distribution of both the proportion of Asian-Americans and avoids clustering the many data points that are close to zero.</p>
 <p>Now, I will find a linear model for the line of best fit to see the coefficient of determination.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>median_household_income_2019</span> <span class='op'>~</span> <span class='va'>asian_2019</span>, <span class='va'>county_complete</span><span class='op'>)</span></span>
-<span><span class='va'>prop_med_fit</span></span></code></pre>
+<span><span class='fu'><a href='https://modelsummary.com/man/modelsummary.html'>modelsummary</a></span><span class='op'>(</span><span class='va'>prop_med_fit</span><span class='op'>)</span></span></code></pre>
 </div>
-<pre><code>
-Call:
-lm(formula = median_household_income_2019 ~ asian_2019, data = county_complete)
-
-Coefficients:
-(Intercept)   asian_2019  
-      50093         2442  </code></pre>
+<table style="width:38%;">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><ol type="1">
+<li></li>
+</ol></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td>50092.803</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(247.551)</td>
+</tr>
+<tr class="odd">
+<td>asian_2019</td>
+<td>2442.042</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(79.231)</td>
+</tr>
+<tr class="odd">
+<td>Num.Obs.</td>
+<td>3142</td>
+</tr>
+<tr class="even">
+<td>R2</td>
+<td>0.232</td>
+</tr>
+<tr class="odd">
+<td>R2 Adj.</td>
+<td>0.232</td>
+</tr>
+<tr class="even">
+<td>AIC</td>
+<td>68169.1</td>
+</tr>
+<tr class="odd">
+<td>BIC</td>
+<td>68187.3</td>
+</tr>
+<tr class="even">
+<td>Log.Lik.</td>
+<td>-34081.564</td>
+</tr>
+<tr class="odd">
+<td>RMSE</td>
+<td>12433.55</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>From the regression, we can see that the intercept is 50,093. That means that the median income in a county with zero Asian American is predicted to be $50,093. The slope of 2,442 means that for every percentage point increase in the proportion of Asian Americans, the county’s median income is predicted to increase by $2,442. The r-squared values means that 23% of the variation of the dependent variable, median household income, can be explained by the independent variable, proportion of Asian Americans. This also means that 77% of the variation is unexplained. There is a small relationship between the two variables. Based on how the graph looks, this could mean there is a nonlinear relationship between the two variables.</p>
+<p>Below is a calculation to find the p-value for the slope of the regression.</p>
+<div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>prop_med_fit_summary</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>prop_med_fit</span><span class='op'>)</span></span>
-<span><span class='va'>prop_med_fit_summary</span><span class='op'>$</span><span class='va'>r.squared</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://modelsummary.com/man/modelsummary.html'>modelsummary</a></span><span class='op'>(</span><span class='va'>prop_med_fit</span>, statistic <span class='op'>=</span> <span class='st'>"p.value"</span><span class='op'>)</span></span></code></pre>
 </div>
-<pre><code>[1] 0.2322692</code></pre>
+<table style="width:38%;">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><ol type="1">
+<li></li>
+</ol></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td>50092.803</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(&lt;0.001)</td>
+</tr>
+<tr class="odd">
+<td>asian_2019</td>
+<td>2442.042</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(&lt;0.001)</td>
+</tr>
+<tr class="odd">
+<td>Num.Obs.</td>
+<td>3142</td>
+</tr>
+<tr class="even">
+<td>R2</td>
+<td>0.232</td>
+</tr>
+<tr class="odd">
+<td>R2 Adj.</td>
+<td>0.232</td>
+</tr>
+<tr class="even">
+<td>AIC</td>
+<td>68169.1</td>
+</tr>
+<tr class="odd">
+<td>BIC</td>
+<td>68187.3</td>
+</tr>
+<tr class="even">
+<td>Log.Lik.</td>
+<td>-34081.564</td>
+</tr>
+<tr class="odd">
+<td>RMSE</td>
+<td>12433.55</td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>From the regression, we can see that the intercept is 26,539. That means that the median income in a county with zero Asian American is predicted to be $26,539. The slope of 1,704 means that for every percentage point increase in the proportion of Asian Americans, the county’s median income is predicted to increase by $1,704. The r-squared values means that 16% of the variation of the dependent variable, median income, can be explained by the independent variable, proportion of Asian Americans. This means there is a small relationship between the two variables. Based on how the graph looks, this could mean there is a nonlinear relationship between the two variables.</p>
-<p>Now, I will run a hypothesis test to find a p-value for the slope of the regression.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Under the intercept and the slope, it now displays the p-value instead of the standard error. We can see that the p-value is less than 0.001 for both values, which is statistically significant at the 0.05 level. This p-value is for a two sided test. Since the alternative hypothesis of β &gt; 0 is one-sided, the p-value for our test is less than 0.0005. This means that we can reject the null hypothesis. There is an association between the proportion of Asian-Americans and median household income.</p>
+<p>A hypothesis test may seem unnecessary here since I was working with data from all US counties, which was the entire population. However, conceptually, this result could be generalized to all US communities with US counties as a sample of them.</p>
+<p>This outcome is statistically significant. However, its substantive significance is questionable. A $2,442 increase in median income per percentage point is only meaningful in counties with a substantial Asian-American population. Many counties in the USA have less 1% Asian-American population, meaning effect is limited.</p>
+<p>I am also unable to establish a causal relationship in this case. While proportion of Asian-Americans and median household income are certainly correlated, there are several confounding variables. Urbanization, education level, and cost of living, are just a few examples of variables that could influence both the proportion of Asian-Americans in a community and the median household income of that community.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The analysis did find a correlation between the proportion of Asian-Americans and median household income in a community. For every percentage point increase in the proportion of Asian-Americans, the median household income is expected to increase by $2,442. This supports my hypothesis that a greater proportion of Asian-Americans in a county is associated with greater median household income. It is important to note the large amount of unexplained variance (77%) in the model suggests that the proportion of Asian-Americans alone is a poor predictor for median household income, which undermines the economic performance argument that justifies the model minority myth. While I did find that the two are correlated, I was unable to establish a causal relationship, and the substantive significance of the result is limited. There are many confounding variables that prevent the establishment of a causal relationship. Even if the relationship was causal, its substantive effect would be limited because many American counties have low proportions of Asian-Americans. If I had more time, I would explore and try to control for some of these confounding variables (like cost of living or education level) to more conclusively see if a causal relationship can be established.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
