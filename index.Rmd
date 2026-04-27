@@ -45,7 +45,8 @@ ggplot(county_complete, aes(x = median_household_income_2019)) +
     x = "Median Household Income ($)",
     y = "Count",
     title = "Median Household Income by County in the US in 2019"
-  )
+  ) +
+  geom_vline(xintercept = pop_med_inc, color = "red")
 ```
 
 From this histogram, we can see that Median Household Income by county is skewed to the right and has a single peak at approximately $50,000.
